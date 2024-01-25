@@ -15,7 +15,7 @@ model User {
   email    String   @unique
   name     String?
   password String
-  verified Boolean  @default(false)//Implement later
+  verified Boolean  @default(false) // TODO: Add email verification in the future
   notes    Note[]   @relation("UserNotes")
   sharedNotes Note[] @relation("SharedNotes")
   createdAt DateTime @default(now())
