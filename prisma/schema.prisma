@@ -10,3 +10,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String?
+  password String
+  verified Boolean  @default(false) // TODO: Add email verification in the future
+  notes    Note[]   @relation("UserNotes")
+  sharedNotes Note[] @relation("SharedNotes")
+  createdAt DateTime @default(now())
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(name: "UserNotes", fields: [authorId], references: [id])
+  authorId  Int
+  sharedWith User[]  @relation(name: "SharedNotes")
+}
