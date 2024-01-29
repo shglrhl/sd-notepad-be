@@ -1,7 +1,21 @@
 import { body } from "express-validator";
 
 export const registerValidations = [
-	body("email").isEmail().withMessage("Invalid email address"),
+	/*  #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/userCredentials"
+                    }  
+                }
+            }
+        } 
+    */
+	body("email")
+		.trim()
+		.isEmail()
+		.withMessage("Invalid email address"),
 	body("password")
 		.isLength({ min: 6 })
 		.withMessage("Password must be at least 6 characters long"),
@@ -9,7 +23,20 @@ export const registerValidations = [
 ];
 
 export const loginValidations = [
-	body("email").isEmail().withMessage("Invalid email address"),
+	/*  #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/userCredentials"
+                    }  
+                }
+            }
+        } 
+    */
+	body("email")
+		.isEmail()
+		.withMessage("Invalid email address"),
 	body("password")
 		.isLength({ min: 6 })
 		.withMessage("Password must be at least 6 characters long"),

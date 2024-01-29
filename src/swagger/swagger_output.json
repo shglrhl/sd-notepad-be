@@ -1,0 +1,682 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "My API",
+    "description": "API Documentation",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    }
+  ],
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Register User",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validationErrors"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already exists"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userCredentials"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Login User",
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validationErrors"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userCredentials"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/notes/": {
+      "post": {
+        "tags": [
+          "Notes"
+        ],
+        "description": "Create a new note",
+        "responses": {
+          "201": {
+            "description": "Note created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/newNoteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validationErrors"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/newNote"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Notes"
+        ],
+        "description": "Get all notes for user",
+        "responses": {
+          "200": {
+            "description": "Notes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/noteArray"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/notes/shared": {
+      "get": {
+        "tags": [
+          "Notes"
+        ],
+        "description": "Get all notes shared to user",
+        "responses": {
+          "200": {
+            "description": "Notes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/noteArray"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/notes/search": {
+      "get": {
+        "tags": [
+          "Notes"
+        ],
+        "description": "Get all notes shared to user",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/noteArray"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or incorrectly formatted search string query"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/notes/{id}": {
+      "get": {
+        "tags": [
+          "Notes"
+        ],
+        "description": "Get note by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/noteId"
+            },
+            "description": "Note ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Note retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/newNoteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validationErrors"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Note not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Notes"
+        ],
+        "description": "Update note",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validationErrors"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Note not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateNote"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Notes"
+        ],
+        "description": "Delete note",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/noteId"
+            },
+            "description": "Note ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validationErrors"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Note not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/notes/{id}/share": {
+      "put": {
+        "tags": [
+          "Notes"
+        ],
+        "description": "Share note to user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/noteId"
+            },
+            "description": "ID of the note to share"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validationErrors"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Please log in and try again."
+          },
+          "404": {
+            "description": "Note not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/shareNote"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "loginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "testToken123"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "userCredentials": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "testemail@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "testpassword"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "newNote": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "New Note Title"
+          },
+          "content": {
+            "type": "string",
+            "example": "Content of my new note"
+          },
+          "tags": {
+            "type": "array",
+            "example": [
+              "tag1",
+              "tag2"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "sharedWith": {
+            "type": "array",
+            "example": [
+              1,
+              2,
+              3
+            ],
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "content"
+        ]
+      },
+      "newNoteResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 7
+          },
+          "title": {
+            "type": "string",
+            "example": "New Note Title"
+          },
+          "content": {
+            "type": "string",
+            "example": "Content of my new note"
+          },
+          "tags": {
+            "type": "array",
+            "example": [
+              "tag1",
+              "tag2"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2024-01-29T16:56:48.708Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2024-01-29T16:56:48.708Z"
+          },
+          "authorId": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "noteArray": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 7
+            },
+            "title": {
+              "type": "string",
+              "example": "New Note Title"
+            },
+            "content": {
+              "type": "string",
+              "example": "Content of my new note"
+            },
+            "tags": {
+              "type": "array",
+              "example": [
+                "tag1",
+                "tag2"
+              ],
+              "items": {
+                "type": "string"
+              }
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2024-01-29T16:56:48.708Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2024-01-29T16:56:48.708Z"
+            },
+            "authorId": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        }
+      },
+      "updateNote": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Updated Note Title"
+          },
+          "content": {
+            "type": "string",
+            "example": "Content of my updated note"
+          },
+          "tags": {
+            "type": "array",
+            "example": [
+              "tag1",
+              "tag2"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "content"
+        ]
+      },
+      "shareNote": {
+        "type": "object",
+        "properties": {
+          "sharedWith": {
+            "type": "array",
+            "example": [
+              1,
+              2
+            ],
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "noteId": {
+        "type": "number",
+        "example": 1
+      },
+      "validationErrors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "field"
+            },
+            "value": {
+              "type": "string",
+              "example": "testd"
+            },
+            "msg": {
+              "type": "string",
+              "example": "Password must be at least 6 characters long"
+            },
+            "path": {
+              "type": "string",
+              "example": "password"
+            },
+            "location": {
+              "type": "string",
+              "example": "body"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
