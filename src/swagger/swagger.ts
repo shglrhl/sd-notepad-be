@@ -24,7 +24,6 @@ const doc = {
 				$title: "New Note Title",
 				$content: "Content of my new note",
 				tags: ["tag1", "tag2"],
-				sharedWith: [1, 2, 3], //User Ids of users to share note with
 			},
 			newNoteResponse: {
 				id: 7,
@@ -52,7 +51,7 @@ const doc = {
 				tags: ["tag1", "tag2"],
 			},
 			shareNote: {
-				sharedWith: [1, 2], //User Ids of users to share note with
+				sharedWith: "testemail2@gmail.com",
 			},
 			noteId: 1,
 			validationErrors: [

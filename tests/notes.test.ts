@@ -26,7 +26,6 @@ describe("POST /notes", () => {
 		expect(res.status).toBe(201); // Assuming 201 for created resource
 		expect(res.body.title).toBe(noteData.title);
 		noteId = res.body.id; // Store the ID for later use
-		console.log("noteId:", noteId);
 	});
 });
 
@@ -65,15 +64,11 @@ describe("PUT /notes/:id", () => {
 describe("Sharing a Note", () => {
 	it("should share a note with another user", async () => {
 		const res = await request(app)
-			.put(`/notes/${noteId}/share`) // Using template literal for dynamic noteId
+			.put(`/api/notes/${noteId}/share`)
 			.set("Authorization", `Bearer ${token}`)
-			.send({ userId: 2 }); // Adjust with the ID of the user to share the note with
-
-		// Check if the status is either 200 or 409
-		expect([200, 409]).toContain(res.status);
+			.send({ sharedWith: "testemail2@gmail.com" }); // Using the email of the 2nd user we created in the user test
+		expect(res.status).toBe(200);
 	});
-
-	// Additional tests for other scenarios...
 });
 
 describe("DELETE /notes/:id", () => {

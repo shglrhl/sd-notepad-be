@@ -26,7 +26,7 @@ export const createNote = async (req: URequest, res: Response) => {
         }   
     */
 
-	const { title, content, tags, sharedWith } = req.body;
+	const { title, content, tags } = req.body;
 	const userId = req.user?.id;
 	if (userId === undefined)
 		return res.status(500).json({ error: "Internal server error" });
@@ -38,9 +38,6 @@ export const createNote = async (req: URequest, res: Response) => {
 				content,
 				authorId: userId,
 				tags,
-				sharedWith: {
-					connect: sharedWith?.map((id: number) => ({ id: id })),
-				},
 			},
 		});
 		/* #swagger.responses[201] = {
@@ -212,7 +209,7 @@ export const searchNotes = async (req: URequest, res: Response) => {
         }   
     */
 
-	const query = typeof req.query.query === "string" ? req.query.query : "";
+	const query = typeof req.query.query as string;
 
 	try {
 		const notes = await prisma.note.findMany({
@@ -337,12 +334,11 @@ export const shareNote = async (req: URequest, res: Response) => {
 
 	const noteId = parseInt(req.params.id);
 	const userId = req.user?.id;
-	const sharedUserId = parseInt(req.body.sharedWith);
+	const sharedEmailId = req.body.sharedWith as string;
 
 	if (userId === undefined) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
-
 	try {
 		const note = await prisma.note.findUnique({
 			where: {
@@ -356,6 +352,17 @@ export const shareNote = async (req: URequest, res: Response) => {
 			return res.status(404).json({ error: "Note not found" });
 		}
 
+		const user = await prisma.user.findUnique({
+			where: {
+				email: sharedEmailId,
+			},
+		});
+
+		if (!user) {
+			// #swagger.responses[404] = { description: 'User not found' }
+			return res.status(404).json({ error: "User not found" });
+		}
+
 		const sharedNote = await prisma.note.update({
 			where: {
 				id: noteId,
@@ -363,11 +370,12 @@ export const shareNote = async (req: URequest, res: Response) => {
 			data: {
 				sharedWith: {
 					connect: {
-						id: sharedUserId,
+						id: user?.id,
 					},
 				},
 			},
 		});
+
 		return res.status(200).json(sharedNote);
 	} catch (error) {
 		console.error(error);
@@ -414,12 +422,10 @@ export const deleteNote = async (req: URequest, res: Response) => {
 				authorId: userId,
 			},
 		});
-
 		if (!note) {
 			// #swagger.responses[404] = { description: 'Note not found' }
 			return res.status(404).json({ error: "Note not found" });
 		}
-
 		const deletedNote = await prisma.note.delete({
 			where: {
 				id: noteId,

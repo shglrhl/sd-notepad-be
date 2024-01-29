@@ -429,7 +429,7 @@
             "description": "Unauthorized. Please log in and try again."
           },
           "404": {
-            "description": "Note not found"
+            "description": "User not found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -503,17 +503,6 @@
             ],
             "items": {
               "type": "string"
-            }
-          },
-          "sharedWith": {
-            "type": "array",
-            "example": [
-              1,
-              2,
-              3
-            ],
-            "items": {
-              "type": "number"
             }
           }
         },
@@ -634,14 +623,8 @@
         "type": "object",
         "properties": {
           "sharedWith": {
-            "type": "array",
-            "example": [
-              1,
-              2
-            ],
-            "items": {
-              "type": "number"
-            }
+            "type": "string",
+            "example": "testemail2@gmail.com"
           }
         }
       },

@@ -76,7 +76,7 @@ export const sharedNoteValidation = [
 	param("id")
 		.isInt()
 		.withMessage("Note ID must be a valid integer"),
-	body("sharedWith").isInt({ min: 0 }).withMessage("Invalid type for userId"),
+	body("sharedWith").isEmail().withMessage("Invalid email id"),
 ];
 
 export const noteIdValidation = [
@@ -106,5 +106,7 @@ export const searchNotesValidation = [
 	*/
 	body("query")
 		.exists()
-		.withMessage("Missing search query"),
+		.withMessage("Missing search query")
+		.isString()
+		.withMessage("Invalid search query string"),
 ];
