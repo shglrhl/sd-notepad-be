@@ -16,8 +16,4 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/notes", authenticateMiddleware, noteRoutes);
 
-app.listen(PORT, () => {
-	console.info(`Server is running on port ${PORT}`);
-});
-
 export default app;

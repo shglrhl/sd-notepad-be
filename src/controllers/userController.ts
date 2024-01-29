@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
-import { validateResults } from "../utils";
 
 const prisma = new PrismaClient();
 const jwtSecret = process.env.JWT_SECRET;
@@ -24,8 +23,6 @@ export const register = async (req: Request, res: Response) => {
             }
         }   
     */
-	// * Validate request against the validation schema
-	validateResults(req, res);
 
 	const { email, password } = req.body;
 	const trimmedEmail = email.trim(); // * Remove whitespace from email
@@ -53,9 +50,9 @@ export const register = async (req: Request, res: Response) => {
 				password: hashedPassword,
 			},
 		});
-		res.status(201).json({ message: "User created successfully" });
+		return res.status(201).json({ message: "User created successfully" });
 	} catch (error) {
-		res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
 
@@ -78,8 +75,6 @@ export const login = async (req: Request, res: Response) => {
             }
         }   
     */
-	// * Validate request against the validation schema
-	validateResults(req, res);
 
 	const { email, password } = req.body;
 
@@ -107,6 +102,7 @@ export const login = async (req: Request, res: Response) => {
 		const payload: User = {
 			id: user.id,
 			email: user.email,
+			name: user.name || "",
 		};
 		// * Create JWT token
 		const token = jwt.sign(payload, jwtSecret, {
@@ -123,8 +119,8 @@ export const login = async (req: Request, res: Response) => {
             }
         }   
     	*/
-		res.status(200).json({ token: token });
+		return res.status(200).json({ token: token });
 	} catch (error) {
-		res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };

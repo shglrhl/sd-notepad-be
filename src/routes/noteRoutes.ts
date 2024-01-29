@@ -7,6 +7,7 @@ import {
 	sharedNoteValidation,
 	updateNoteValidation,
 } from "../validations/noteValidations";
+import { validationMiddleware } from "../middleware/validate";
 
 const router = express.Router();
 
@@ -21,14 +22,39 @@ router.get("/shared", noteController.getSharedNotes);
 
 router.get("/", noteController.getNotes);
 
-router.get("/search", searchNotesValidation, noteController.searchNotes);
+router.get(
+	"/search",
+	searchNotesValidation,
+	validationMiddleware,
+	noteController.searchNotes,
+);
 
-router.get("/:id", noteIdValidation, noteController.getNoteById);
+router.get(
+	"/:id",
+	noteIdValidation,
+	validationMiddleware,
+	noteController.getNoteById,
+);
 
-router.put("/:id", updateNoteValidation, noteController.updateNote);
+router.put(
+	"/:id",
+	updateNoteValidation,
+	validationMiddleware,
+	noteController.updateNote,
+);
 
-router.put("/:id/share", sharedNoteValidation, noteController.shareNote);
+router.put(
+	"/:id/share",
+	sharedNoteValidation,
+	validationMiddleware,
+	noteController.shareNote,
+);
 
-router.delete("/:id", noteIdValidation, noteController.deleteNote);
+router.delete(
+	"/:id",
+	noteIdValidation,
+	validationMiddleware,
+	noteController.deleteNote,
+);
 
 export default router;

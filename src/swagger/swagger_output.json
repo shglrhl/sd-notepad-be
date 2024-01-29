@@ -203,7 +203,7 @@
         "tags": [
           "Notes"
         ],
-        "description": "Get all notes shared to user",
+        "description": "Search notes (title, content, tags)",
         "parameters": [
           {
             "name": "query",
@@ -227,7 +227,14 @@
             }
           },
           "400": {
-            "description": "Missing or incorrectly formatted search string query"
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validationErrors"
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"

@@ -2,7 +2,6 @@ import { Response } from "express";
 import { validationResult } from "express-validator";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { URequest } from "../types/custom";
-import { validateResults } from "../utils";
 
 const prisma = new PrismaClient();
 
@@ -26,8 +25,6 @@ export const createNote = async (req: URequest, res: Response) => {
             }
         }   
     */
-	// * Validate request against the validation schema
-	validateResults(req, res);
 
 	const { title, content, tags, sharedWith } = req.body;
 	const userId = req.user?.id;
@@ -57,10 +54,10 @@ export const createNote = async (req: URequest, res: Response) => {
             }
         }   
     	*/
-		res.status(201).json(note);
+		return res.status(201).json(note);
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
 
@@ -93,10 +90,10 @@ export const getNotes = async (req: URequest, res: Response) => {
             }
         }   
     	*/
-		res.status(200).json(notes);
+		return res.status(200).json(notes);
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
 
@@ -119,8 +116,6 @@ export const getNoteById = async (req: URequest, res: Response) => {
             }
         }   
     */
-	// * Validate request against the validation schema
-	validateResults(req, res);
 
 	const noteId = parseInt(req.params.id);
 	const userId = req.user?.id;
@@ -149,10 +144,10 @@ export const getNoteById = async (req: URequest, res: Response) => {
             }
         }   
     	*/
-		res.status(200).json(note);
+		return res.status(200).json(note);
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
 
@@ -191,10 +186,10 @@ export const getSharedNotes = async (req: URequest, res: Response) => {
             }
         }   
     	*/
-		res.status(200).json(sharedNotes);
+		return res.status(200).json(sharedNotes);
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
 
@@ -216,8 +211,6 @@ export const searchNotes = async (req: URequest, res: Response) => {
             }
         }   
     */
-	// * Validate request against the validation schema
-	validateResults(req, res);
 
 	const query = typeof req.query.query === "string" ? req.query.query : "";
 
@@ -257,9 +250,9 @@ export const searchNotes = async (req: URequest, res: Response) => {
             }
         }   
     	*/
-		res.json(notes);
+		return res.json(notes);
 	} catch (error) {
-		res.status(500).json({ message: "Error searching for notes" });
+		return res.status(500).json({ message: "Error searching for notes" });
 	}
 };
 
@@ -282,8 +275,6 @@ export const updateNote = async (req: URequest, res: Response) => {
             }
         }   
     */
-	// * Validate request against the validation schema
-	validateResults(req, res);
 
 	const noteId = parseInt(req.params.id);
 	const userId = req.user?.id;
@@ -307,7 +298,6 @@ export const updateNote = async (req: URequest, res: Response) => {
 		const updatedNote = await prisma.note.update({
 			where: {
 				id: noteId,
-				authorId: userId,
 			},
 			data: {
 				title,
@@ -316,10 +306,10 @@ export const updateNote = async (req: URequest, res: Response) => {
 			},
 		});
 
-		res.status(200).json(updatedNote);
+		return res.status(200).json(updatedNote);
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
 
@@ -344,8 +334,6 @@ export const shareNote = async (req: URequest, res: Response) => {
             }
         }   
     */
-	// * Validate request against the validation schema
-	validateResults(req, res);
 
 	const noteId = parseInt(req.params.id);
 	const userId = req.user?.id;
@@ -380,7 +368,7 @@ export const shareNote = async (req: URequest, res: Response) => {
 				},
 			},
 		});
-		res.status(200).json(sharedNote);
+		return res.status(200).json(sharedNote);
 	} catch (error) {
 		console.error(error);
 		// * Handle error when the user is not found
@@ -390,7 +378,7 @@ export const shareNote = async (req: URequest, res: Response) => {
 			}
 		}
 		// * Handle other potential errors
-		res.status(500).json({ message: "Error sharing the note" });
+		return res.status(500).json({ message: "Error sharing the note" });
 	}
 };
 
@@ -413,8 +401,6 @@ export const deleteNote = async (req: URequest, res: Response) => {
             }
         }   
     */
-	// * Validate request against the validation schema
-	validateResults(req, res);
 
 	const noteId = parseInt(req.params.id);
 	const userId = req.user?.id;
@@ -441,9 +427,9 @@ export const deleteNote = async (req: URequest, res: Response) => {
 			},
 		});
 
-		res.status(200).json({ message: "Note deleted successfully" });
+		return res.status(200).json({ message: "Note deleted successfully" });
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
